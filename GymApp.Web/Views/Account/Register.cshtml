@@ -1,0 +1,97 @@
+﻿@{
+    ViewData["Title"] = "Register";
+}
+
+<style>
+    body {
+        background-color: #0b0f19 !important;
+        color: #ffffff !important;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    .login-container {
+        max-width: 400px;
+        margin: 80px auto;
+        padding: 30px;
+        background-color: #1a1f2e;
+        border-radius: 20px;
+        border: 1px solid #2a3143;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    }
+
+    .arrow-brand {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
+    .arrow-icon {
+        font-size: 3rem;
+        background: -webkit-linear-gradient(#3b82f6, #2563eb); /* Changed to blue for character creation */
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .form-control-dark {
+        background-color: #0b0f19;
+        border: 1px solid #2a3143;
+        color: white;
+        border-radius: 12px;
+        padding: 15px;
+        margin-bottom: 15px;
+        width: 100%;
+    }
+
+        .form-control-dark:focus {
+            background-color: #0b0f19;
+            border-color: #3b82f6;
+            color: white;
+            outline: none;
+            box-shadow: 0 0 0 0.25rem rgba(59, 130, 246, 0.25);
+        }
+
+    .arrow-btn-primary {
+        background-color: #3b82f6;
+        color: white;
+        border: none;
+        border-radius: 14px;
+        font-weight: 800;
+        font-size: 1.1rem;
+        padding: 15px;
+        width: 100%;
+        transition: transform 0.2s, opacity 0.2s;
+    }
+
+        .arrow-btn-primary:hover {
+            transform: scale(1.02);
+            opacity: 0.9;
+            color: white;
+        }
+</style>
+
+<div class="login-container">
+    <div class="arrow-brand">
+        <h1 class="arrow-icon">🔥</h1>
+        <h2 style="font-weight: 800;">Join the Ranks</h2>
+        <p style="color: #64748b;">Create your profile to start logging.</p>
+    </div>
+
+    <div asp-validation-summary="All" class="text-danger mb-3" style="font-size: 0.9rem;"></div>
+
+    <form method="post" asp-action="Register">
+        <div class="mb-3">
+            <input type="text" name="name" class="form-control" placeholder="Display Name (e.g. Ayaz)" required style="background-color: #1a1f2e; border: 1px solid #2a3143; color: white; padding: 12px; border-radius: 8px; width: 100%;" />
+        </div>
+        <input type="email" name="email" class="form-control-dark" placeholder="Email address" required />
+        <input type="password" name="password" class="form-control-dark" placeholder="Password" required />
+        <input type="password" name="confirmPassword" class="form-control-dark" placeholder="Confirm Password" required />
+
+        <button type="submit" class="arrow-btn-primary mt-3">
+            Create Profile
+        </button>
+    </form>
+
+    <div class="text-center mt-4">
+        <p style="color: #64748b;">Already have a profile?</p>
+        <a asp-controller="Account" asp-action="Login" style="color: #3b82f6; text-decoration: none; font-weight: 600;">Log In Instead</a>
+    </div>
+</div>

@@ -1,0 +1,74 @@
+﻿@{
+    ViewData["Title"] = "Create Routine";
+}
+
+<style>
+    body {
+        background-color: #0b0f19 !important;
+        color: #ffffff !important;
+    }
+
+    .create-card {
+        background-color: #1a1f2e;
+        border-radius: 20px;
+        padding: 30px;
+        margin-top: 40px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        border: 1px solid #2a3143;
+    }
+
+    .dark-input {
+        background-color: #0b0f19;
+        border: 1px solid #2a3143;
+        color: white;
+        border-radius: 12px;
+        padding: 15px;
+        width: 100%;
+        font-size: 1.2rem;
+        font-weight: 600;
+        margin-bottom: 20px;
+    }
+
+        .dark-input:focus {
+            outline: none;
+            border-color: #10b981; /* Highlights green when typing */
+        }
+
+        .dark-input::placeholder {
+            color: #64748b;
+            font-weight: 500;
+        }
+
+    .btn-save {
+        background-color: #10b981;
+        color: #0b0f19;
+        border: none;
+        border-radius: 12px;
+        font-weight: 800;
+        font-size: 1.1rem;
+        padding: 15px;
+        width: 100%;
+        box-shadow: 0 10px 20px rgba(16, 185, 129, 0.2);
+    }
+</style>
+
+<div class="container" style="max-width: 400px;">
+
+    <div class="d-flex justify-content-between align-items-center mt-4 mb-2">
+        <h2 style="font-weight: 800; margin: 0;">New Routine</h2>
+        <a asp-action="Index" style="color: #ef4444; font-weight: 600; text-decoration: none;">Cancel</a>
+    </div>
+
+    <div class="create-card">
+        <form asp-action="Create" method="post">
+
+            <label style="color: #64748b; font-weight: 600; margin-bottom: 8px; display: block;">Routine Name</label>
+            <input type="text" name="routineName" class="dark-input" placeholder="e.g. Push Day" required autocomplete="off" />
+
+            <button type="submit" class="btn-save">
+                Create & Build
+            </button>
+
+        </form>
+    </div>
+</div>

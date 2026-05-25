@@ -1,0 +1,137 @@
+﻿@model List<GymApp.Entities.Exercise>
+
+<style>
+    /* Override the entire page to be a dark app background */
+    body {
+        background-color: #0b0f19 !important; /* Deep sleek dark blue/black */
+        color: #ffffff !important;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    /* The individual exercise cards */
+    .arrow-card {
+        background-color: #1a1f2e;
+        border-radius: 16px;
+        border: 1px solid #2a3143;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .arrow-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.6);
+        border-color: #3b82f6;
+    }
+
+    /* Gamified little ID tags */
+    .arrow-badge {
+        background-color: #2a3143;
+        color: #94a3b8;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        border-radius: 8px;
+        padding: 6px 12px;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+    }
+
+    .arrow-title {
+        font-size: 1.25rem;
+        font-weight: 700;
+        margin-top: 15px;
+        color: #f8fafc;
+    }
+
+    .arrow-desc {
+        color: #94a3b8;
+        font-size: 0.9rem;
+        line-height: 1.5;
+    }
+
+    /* Punchy, modern app button */
+    .arrow-btn {
+        background: linear-gradient(135deg, #3b82f6, #2563eb);
+        color: white;
+        border: none;
+        border-radius: 12px;
+        font-weight: 700;
+        padding: 12px;
+        transition: opacity 0.2s;
+    }
+
+    .arrow-btn:hover {
+        opacity: 0.9;
+        color: white;
+    }
+
+    .page-header {
+        font-weight: 800;
+        background: -webkit-linear-gradient(#ffffff, #94a3b8);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+</style>
+
+<div class="container mt-5">
+    <div class="text-center mb-5">
+        <h1 class="page-header display-4">Workout Database</h1>
+    </div>
+    <div class="d-flex justify-content-center flex-wrap gap-2 mb-5 mt-3">
+        <button class="btn btn-light filter-btn" data-filter="All" style="font-weight: bold; border-radius: 10px; width: 100px;">All</button>
+        <button class="btn btn-outline-light filter-btn" data-filter="1" style="font-weight: bold; border-radius: 10px; width: 100px;">Chest</button>
+        <button class="btn btn-outline-light filter-btn" data-filter="2" style="font-weight: bold; border-radius: 10px; width: 100px;">Back</button>
+        <button class="btn btn-outline-light filter-btn" data-filter="5" style="font-weight: bold; border-radius: 10px; width: 100px;">Arms</button>
+        <button class="btn btn-outline-light filter-btn" data-filter="4" style="font-weight: bold; border-radius: 10px; width: 100px;">Shoulders</button>
+        <button class="btn btn-outline-light filter-btn" data-filter="3" style="font-weight: bold; border-radius: 10px; width: 100px;">Legs</button>
+    </div>
+
+    <div class="row">
+        @foreach (var item in Model)
+        {
+            <div class="col-lg-4 col-md-6 mb-4 exercise-item" data-category="@item.BodyPartId">
+                <div class="card arrow-card h-100 p-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="arrow-badge">Movement ID: @item.Id</span>
+                    </div>
+
+                    <div class="card-body px-0 py-2">
+                        <h4 class="arrow-title">@item.Name</h4>
+                        <p class="arrow-desc">@item.Description</p>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const buttons = document.querySelectorAll('.filter-btn');
+        const cards = document.querySelectorAll('.exercise-item');
+
+        buttons.forEach(button => {
+            button.addEventListener('click', function () {
+
+                // 1. Update the button colors (make the clicked one solid white)
+                buttons.forEach(btn => {
+                    btn.classList.remove('btn-light');
+                    btn.classList.add('btn-outline-light');
+                });
+                this.classList.remove('btn-outline-light');
+                this.classList.add('btn-light');
+
+                // 2. Find out which category was clicked
+                const selectedCategory = this.getAttribute('data-filter');
+
+                // 3. Loop through all cards and hide/show them instantly!
+                cards.forEach(card => {
+                    const cardCategory = card.getAttribute('data-category');
+
+                    if (selectedCategory === 'All' || cardCategory === selectedCategory) {
+                        card.style.display = 'block'; // Show it
+                    } else {
+                        card.style.display = 'none';  // Hide it
+                    }
+                });
+            });
+        });
+    });
+</script>

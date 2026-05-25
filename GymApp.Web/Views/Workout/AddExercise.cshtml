@@ -1,0 +1,169 @@
+﻿@model List<GymApp.Entities.Exercise>
+<style>
+    .exercise-row.selected {
+        border-color: #10b981 !important;
+        background-color: #1a2a20 !important;
+    }
+
+    .btn-complete {
+        background-color: #10b981;
+        color: #0b0f19;
+        border: none;
+        border-radius: 16px;
+        font-weight: 800;
+        font-size: 1.2rem;
+        padding: 18px;
+        width: 100%;
+        box-shadow: 0 10px 20px rgba(16, 185, 129, 0.2);
+    }
+
+    /* Padding so the list doesn't get hidden behind the button */
+    .bottom-padding {
+        padding-bottom: 150px;
+    }
+
+    /* Make the search bar look clean */
+    .search-box {
+        width: 100%;
+        padding: 12px 20px;
+        border-radius: 12px;
+        border: none;
+        background-color: #1e293b;
+        color: white;
+    }
+</style>
+
+<div class="container mt-4 bottom-padding">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 style="font-weight: 800; margin: 0;">Library</h2>
+        <a asp-action="Builder" asp-route-id="@ViewBag.PlanId" style="color: #ef4444; font-weight: 600; text-decoration: none;">Cancel</a>
+    </div>
+
+    <input type="text" id="searchInput" class="search-box mb-3" placeholder="Search any exercise..." autocomplete="off" />
+
+    <div class="d-flex justify-content-center flex-wrap gap-2 mb-4 mt-3">
+        <button type="button" class="btn btn-light filter-btn" data-filter="All" style="font-weight: bold; border-radius: 10px; width: 90px;">All</button>
+        <button type="button" class="btn btn-outline-light filter-btn" data-filter="1" style="font-weight: bold; border-radius: 10px; width: 90px;">Chest</button>
+        <button type="button" class="btn btn-outline-light filter-btn" data-filter="2" style="font-weight: bold; border-radius: 10px; width: 90px;">Back</button>
+        <button type="button" class="btn btn-outline-light filter-btn" data-filter="5" style="font-weight: bold; border-radius: 10px; width: 90px;">Arms</button>
+        <button type="button" class="btn btn-outline-light filter-btn" data-filter="4" style="font-weight: bold; border-radius: 10px; width: 90px;">Shoulders</button>
+        <button type="button" class="btn btn-outline-light filter-btn" data-filter="3" style="font-weight: bold; border-radius: 10px; width: 90px;">Legs</button>
+    </div>
+
+    <form asp-controller="Workout" asp-action="SaveExercisesToPlan" method="post">
+        <input type="hidden" name="planId" value="@ViewBag.PlanId" />
+
+        <div class="row" id="exerciseList">
+            @if (Model == null || !Model.Any())
+            {
+                <div class="col-12 text-center mt-5" style="color: #64748b;">
+                    <h4>Your library is empty!</h4>
+                </div>
+            }
+            else
+            {
+                foreach (var ex in Model)
+                {
+                    var existingIds = ViewBag.ExistingExerciseIds as List<int> ?? new List<int>();
+                    bool isAlreadyAdded = existingIds.Contains(ex.Id);
+                    string selectedClass = isAlreadyAdded ? "selected" : "";
+                    string iconText = isAlreadyAdded ? "✓" : "+";
+                    string isChecked = isAlreadyAdded ? "checked" : "";
+
+                    <div class="col-lg-4 col-md-6 mb-3 exercise-item d-block" data-category="@ex.BodyPartId" data-name="@ex.Name.ToLower()">
+
+                        <label class="card h-100 p-3 exercise-row @selectedClass" style="background-color: #1e293b; border: 1px solid #2d2d44; border-radius: 12px; cursor: pointer; margin-bottom: 0;">
+
+                            <input type="checkbox" name="selectedExerciseIds" value="@ex.Id" class="d-none" onchange="toggleSelection(this)" @isChecked />
+
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span style="font-weight: 600; color: white;">@ex.Name</span>
+                                <div class="status-icon" style="color: #10b981; font-weight: bold; font-size: 1.2rem;">@iconText</div>
+                            </div>
+
+                        </label>
+
+                    </div>
+                }
+            }
+        </div>
+
+        <div style="position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%); width: 100%; max-width: 460px; padding: 0 15px; z-index: 1050;">
+            <button type="submit" class="btn-complete">
+                COMPLETE WORKOUT
+            </button>
+        </div>
+    </form>
+</div>
+
+<script>
+    // 1. SELECTION HIGHLIGHTER
+    function toggleSelection(checkbox) {
+        // We use .closest() to easily find the exact card wrapper no matter where the checkbox is!
+        let row = checkbox.closest('.exercise-row');
+        let icon = row.querySelector('.status-icon');
+
+        if (checkbox.checked) {
+            row.classList.add('selected');
+            icon.innerText = '✓';
+        } else {
+            row.classList.remove('selected');
+            icon.innerText = '+';
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+
+        // 2. SEARCH ENGINE
+        document.getElementById('searchInput').addEventListener('input', function (e) {
+            let searchText = e.target.value.toLowerCase();
+            let items = document.querySelectorAll('.exercise-item');
+
+            items.forEach(function (item) {
+                let exerciseName = item.getAttribute('data-name');
+
+                if (exerciseName && exerciseName.includes(searchText)) {
+                    item.classList.remove('d-none');
+                    item.classList.add('d-block');
+                } else {
+                    item.classList.remove('d-block');
+                    item.classList.add('d-none');
+                }
+            });
+        });
+
+        // 3. CATEGORY FILTERS
+        const buttons = document.querySelectorAll('.filter-btn');
+        const cards = document.querySelectorAll('.exercise-item');
+
+        buttons.forEach(button => {
+            button.addEventListener('click', function () {
+
+                // Swap button colors
+                buttons.forEach(btn => {
+                    btn.classList.remove('btn-light');
+                    btn.classList.add('btn-outline-light');
+                });
+                this.classList.remove('btn-outline-light');
+                this.classList.add('btn-light');
+
+                // Get category ID and hide/show cards
+                const selectedCategory = this.getAttribute('data-filter');
+                cards.forEach(card => {
+                    const cardCategory = card.getAttribute('data-category');
+                    if (selectedCategory === 'All' || cardCategory === selectedCategory) {
+                        card.classList.remove('d-none');
+                        card.classList.add('d-block');
+                    } else {
+                        card.classList.remove('d-block');
+                        card.classList.add('d-none');
+                    }
+                });
+
+                // Pro UX Tip: Clear the search bar when you click a new category button!
+                document.getElementById('searchInput').value = '';
+            });
+        });
+    });
+</script>

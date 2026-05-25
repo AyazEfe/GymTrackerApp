@@ -1,0 +1,109 @@
+﻿@model IEnumerable<GymApp.Entities.WorkoutPlan>
+
+<h1 class="text-center mb-4" style="font-weight: 800;">Workouts</h1>
+
+<div class="d-flex justify-content-center mb-4">
+    <div style="background-color: #1e293b; border-radius: 12px; display: flex; padding: 4px; width: 300px;">
+        <button id="btnRoutines" class="btn active-tab w-50" style="border-radius: 10px; font-weight: 600;" onclick="switchTab('routines')">Routines</button>
+        <button id="btnHistory" class="btn inactive-tab w-50" style="border-radius: 10px; font-weight: 600; color: #64748b;" onclick="switchTab('history')">History</button>
+    </div>
+</div>
+
+<div id="routinesSection">
+    @if (Model != null)
+    {
+        foreach (var item in Model)
+        {
+            <a asp-controller="Workout" asp-action="Builder" asp-route-id="@item.Id" class="text-decoration-none">
+                <div class="card bg-dark text-white mb-3" style="border-radius: 15px; background-color: #1a1a2e !important; border: 1px solid #2d2d44;">
+                    <div class="card-body d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0 font-weight-bold">@item.Name</h5>
+                        <span style="color: #64748b;">></span>
+                    </div>
+                </div>
+            </a>
+        }
+    }
+
+    <div class="text-center mt-5">
+        <a asp-action="Create" class="btn btn-success" style="width: 300px; border-radius: 12px; font-weight: bold; background-color: #10b981; border: none; padding: 12px;">Create Workout</a>
+    </div>
+</div>
+
+<div id="historySection" style="display: none;">
+    @if (ViewBag.History != null)
+    {
+        foreach (var session in ViewBag.History)
+        {
+            // Formatting logic to make Volume look like "3.8k" if it's over 1000
+            string formattedVolume = session.TotalVolume > 1000
+            ? (session.TotalVolume / 1000m).ToString("0.0") + "k"
+            : session.TotalVolume.ToString("0");
+            <a asp-action="HistoryDetail" asp-route-id="@session.Id" class="text-decoration-none">
+            <div class="card mb-2" style="border-radius: 15px; background-color: #11111a !important; border: none;">
+                <div class="card-body d-flex justify-content-between align-items-center py-3">
+                    <div>
+                        <div style="color: white; font-weight: 600; font-size: 1.1rem; margin-bottom: 2px;">
+                            @session.RoutineName
+                        </div>
+                        <div style="color: #64748b; font-size: 0.9rem;">
+                            @session.Date.ToString("MM/dd/yy") &bull; @formattedVolume kgs
+                        </div>
+                    </div>
+                    <span style="color: #64748b; font-weight: bold;">></span>
+                </div>
+            </div>
+            </a>
+        }
+    }
+    else
+    {
+        <div class="text-center mt-5" style="color: #64748b;">
+            <p>No completed workouts yet. Go lift something!</p>
+        </div>
+    }
+</div>
+
+<style>
+    .active-tab {
+        background-color: #10b981;
+        color: white;
+    }
+
+    .inactive-tab {
+        background-color: transparent;
+        color: #64748b;
+    }
+</style>
+
+<script>
+    function switchTab(tab) {
+        // Grab elements
+        const routinesSec = document.getElementById('routinesSection');
+        const historySec = document.getElementById('historySection');
+        const btnRoutines = document.getElementById('btnRoutines');
+        const btnHistory = document.getElementById('btnHistory');
+
+        if (tab === 'routines') {
+            // Show Routines, Hide History
+            routinesSec.style.display = 'block';
+            historySec.style.display = 'none';
+            // Swap colors
+            btnRoutines.className = 'btn active-tab w-50';
+            btnHistory.className = 'btn inactive-tab w-50';
+        } else {
+            // Show History, Hide Routines
+            historySec.style.display = 'block';
+            routinesSec.style.display = 'none';
+            // Swap colors
+            btnHistory.className = 'btn active-tab w-50';
+            btnRoutines.className = 'btn inactive-tab w-50';
+        }
+    }
+    // Automatically open the right tab if the URL tells us to!
+    document.addEventListener("DOMContentLoaded", function () {
+        if (window.location.hash === '#history') {
+            switchTab('history');
+        }
+    });
+</script>
