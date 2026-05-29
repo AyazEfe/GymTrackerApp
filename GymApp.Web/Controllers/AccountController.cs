@@ -30,7 +30,7 @@ namespace GymApp.Web.Controllers
                 {
                     return RedirectToAction("Index", "Home");
                 }
-                ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                ModelState.AddModelError(string.Empty, "Your username or password is incorrect.");
             }
             return View();
         }

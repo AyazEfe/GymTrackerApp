@@ -78,6 +78,7 @@
     </div>
 
     <form method="post" asp-action="Login">
+        <div asp-validation-summary="All" class="text-danger mb-3 text-center" style="font-weight: 600; color: #ef4444;"></div>
         <input type="email" name="email" class="form-control-dark" placeholder="Email address" required />
         <input type="password" name="password" class="form-control-dark" placeholder="Password" required />
         <div class="form-check mb-4" style="text-align: left;">
